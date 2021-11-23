@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+<script src="https://cdn.jsdelivr.net/gh/ethereumjs/browser-builds/dist/ethereumjs-tx/ethereumjs-tx-1.3.3.min.js"></script>
+</head>
+<body>
+LOG:
+<div id="result"></div>
+</body>
+<script>
+var web3 = new Web3(new Web3.providers.HttpProvider("https://data-seed-prebsc-1-s1.binance.org:8545/"));
+
+// 合约 abi 内容
+var abi = [{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"newManager","type":"address"}],"name":"AddGameManager","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"newManager","type":"address"}],"name":"AddManager","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"_owner","type":"address"},{"indexed":true,"internalType":"address","name":"_approved","type":"address"},{"indexed":false,"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"_owner","type":"address"},{"indexed":true,"internalType":"address","name":"_operator","type":"address"},{"indexed":false,"internalType":"bool","name":"_approved","type":"bool"}],"name":"ApprovalForAll","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"manager","type":"address"}],"name":"RemoveGameManager","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"manager","type":"address"}],"name":"RemoveManager","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"_from","type":"address"},{"indexed":true,"internalType":"address","name":"_to","type":"address"},{"indexed":false,"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[{"internalType":"address","name":"newManager","type":"address"}],"name":"addGameManager","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"newManager","type":"address"}],"name":"addManager","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_approved","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"approve","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"getApproved","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_operator","type":"address"}],"name":"isApprovedForAll","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"manager","type":"address"}],"name":"isGameManager","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"manager","type":"address"}],"name":"isManager","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"mint","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"pure","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"ownerOf","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"pause","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"paused","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"manager","type":"address"}],"name":"removeGameManager","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"manager","type":"address"}],"name":"removeManager","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_from","type":"address"},{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"},{"internalType":"bytes","name":"_data","type":"bytes"}],"name":"safeTransferFrom","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"_operator","type":"address"},{"internalType":"bool","name":"_approved","type":"bool"}],"name":"setApprovalForAll","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"_prefix","type":"string"},{"internalType":"string","name":"_suffix","type":"string"}],"name":"setTokenURIAffixes","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"bytes4","name":"interfaceID","type":"bytes4"}],"name":"supportsInterface","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"pure","type":"function"},{"inputs":[{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"tokenByIndex","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"uint256","name":"_index","type":"uint256"}],"name":"tokenOfOwnerByIndex","outputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"tokenURI","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"tokenURIPrefix","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"tokenURISuffix","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_from","type":"address"},{"internalType":"address","name":"_to","type":"address"},{"internalType":"uint256","name":"_tokenId","type":"uint256"}],"name":"transferFrom","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"unpause","outputs":[],"stateMutability":"nonpayable","type":"function"}];
+
+function writeHtml(content){
+	var insertDiv = document.getElementById("result")
+	var html = insertDiv.innerHTML
+	insertDiv.innerHTML = html + "<p>" + content + "</p>";
+	console.log(insertDiv.innerHTML)
+}
+
+// 发送交易
+// fromAddress 交易发起者的地址
+// contractAddress 合约地址
+// nonceNum nonce
+// privKey 私钥
+// data 调用的合约函数的数据
+// callBack 获得交易 hash 后的回调函数
+function sendRawTransaction(fromAddress, contractAddress, nonceNum, privKey, data) {
+	return new Promise((resolve, reject)=>{
+		var rawTransaction = {
+			"from": fromAddress,
+			"nonce": nonceNum,
+			"gasLimit": 200000, // 1. gasPrice 设置要足够，否则会出现 transaction underpriced 的错误
+			"gasPrice": 20000000000, // 2. 注意自身账户余额要足够支付交易费用，不够报错：insufficient funds for gas * price + value
+			"to": contractAddress,
+			"data": data,
+			"value": 0,
+			"chainId": 97
+		};
+
+		web3.eth.accounts.signTransaction(rawTransaction, privKey).then((signedTx)=>{		
+			const sentTx = web3.eth.sendSignedTransaction(signedTx.raw || signedTx.rawTransaction);  
+			sentTx.on('transactionHash', (hash)=>{
+				resolve(hash);
+			});
+			sentTx.on('error', (error)=>{
+				// 交易出现异常
+				writeHtml(error);
+			});
+		}).catch((err) => {
+			writeHtml(err)
+		});
+	});
+}
+
+
+const Demo = async () => {
+	writeHtml(`web3 version: ${web3.version}`)
+	var address = "0xe346181ae6aeeb88ad5a51368f8d640de4b10d48";
+	var privateKey = "55531f8b33341e8505675d0d8ac427fb9612d91a5740c823bf5971b8ab5c8eac";
+	
+	
+	var nonceCnt = await web3.eth.getTransactionCount(address);
+	console.log(`num transactions so far: ${nonceCnt}`);
+	
+	// 修改合约地址，可以调用不同的合约
+	var contractAddress = "0x79269ccc01346422dfbe147d6b6bf4323a53c8e3";
+	var contractObj = new web3.eth.Contract(abi, contractAddress);
+	
+	var toAddress = "0x82da9bf0465581c5d54c19f07fc35145a4c5b95f";
+	var tokenId = 654335; // 测试时需要修改本值，如果已存在，交易会出现异常
+	
+	// 修改 mint 及调用函数的参数，可以调用合约的其他函数
+	var mintData = contractObj.methods.mint(toAddress, tokenId).encodeABI();
+
+	var hash = await sendRawTransaction(address, contractAddress, nonceCnt, privateKey, mintData);
+	
+	writeHtml("transaction hash: " + hash);
+	
+	
+	var info = await web3.eth.getTransaction(hash);
+	while(!info.blockHash){
+		await new Promise(resolve => setTimeout(resolve, 1000));
+		info = await web3.eth.getTransaction(hash);
+		writeHtml("check transaction success: " + (info.blockHash ? "success" : "pending"));
+	}
+	writeHtml("transaction info: " + JSON.stringify(info));
+	
+	contractObj.methods.ownerOf(tokenId).call({}, function(error, result){
+		writeHtml("owner:" + result)
+	});
+}
+
+Demo();
+
+
+</script>
+</html>

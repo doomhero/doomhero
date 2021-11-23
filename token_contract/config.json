@@ -1,0 +1,10 @@
+{
+  "main": "./contracts/BEP20Hero.sol",
+  "deploy": "./build/contracts/BEP20Cardano.json",
+  "compilers": {
+    "truffle": "v5.4.1",
+    "solc": "0.6.12",
+    "evmVersion": "istanbul"
+  },
+  "linter": "solhint"
+}

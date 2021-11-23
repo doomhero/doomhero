@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<script src="https://cdn.jsdelivr.net/npm/web3@latest/dist/web3.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/gh/ethereumjs/browser-builds/dist/ethereumjs-tx/ethereumjs-tx-1.3.3.min.js"></script>
+</head>
+
+<body>
+	LOG:
+	<div id="result"></div>
+</body>
+<script>
+	/*测试准备*/
+
+	var web3 = new Web3(new Web3.providers.HttpProvider("https://data-seed-prebsc-1-s1.binance.org:8545/"));
+
+	// 合约 abi 内容
+	var tokenAbi = [{ "inputs": [], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "newManager", "type": "address" }], "name": "AddManager", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "owner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "spender", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }], "name": "Approval", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }], "name": "OwnershipTransferred", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "manager", "type": "address" }], "name": "RemoveManager", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "from", "type": "address" }, { "indexed": true, "internalType": "address", "name": "to", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "value", "type": "uint256" }], "name": "Transfer", "type": "event" }, { "inputs": [], "name": "_decimals", "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "_name", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "_symbol", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "newManager", "type": "address" }], "name": "addManager", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "owner", "type": "address" }, { "internalType": "address", "name": "spender", "type": "address" }], "name": "allowance", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "spender", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "approve", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "balanceOf", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "burn", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "decimals", "outputs": [{ "internalType": "uint8", "name": "", "type": "uint8" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "spender", "type": "address" }, { "internalType": "uint256", "name": "subtractedValue", "type": "uint256" }], "name": "decreaseAllowance", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "getOwner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "spender", "type": "address" }, { "internalType": "uint256", "name": "addedValue", "type": "uint256" }], "name": "increaseAllowance", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "manager", "type": "address" }], "name": "isManager", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "recipient", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }, { "internalType": "uint256", "name": "lockMonthNum", "type": "uint256" }], "name": "lockTo", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "mint", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "name", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "owner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "manager", "type": "address" }], "name": "removeManager", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "account", "type": "address" }], "name": "spendable", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "symbol", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "totalSupply", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "recipient", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "transfer", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "sender", "type": "address" }, { "internalType": "address", "name": "recipient", "type": "address" }, { "internalType": "uint256", "name": "amount", "type": "uint256" }], "name": "transferFrom", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }], "name": "transferOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }];
+	var nftAbi = [{ "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "newManager", "type": "address" }], "name": "AddGameManager", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "newManager", "type": "address" }], "name": "AddManager", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "_owner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "_approved", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "_tokenId", "type": "uint256" }], "name": "Approval", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "_owner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "_operator", "type": "address" }, { "indexed": false, "internalType": "bool", "name": "_approved", "type": "bool" }], "name": "ApprovalForAll", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }], "name": "OwnershipTransferred", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "manager", "type": "address" }], "name": "RemoveGameManager", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "manager", "type": "address" }], "name": "RemoveManager", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "_from", "type": "address" }, { "indexed": true, "internalType": "address", "name": "_to", "type": "address" }, { "indexed": false, "internalType": "uint256", "name": "_tokenId", "type": "uint256" }], "name": "Transfer", "type": "event" }, { "inputs": [{ "internalType": "address", "name": "newManager", "type": "address" }], "name": "addGameManager", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "newManager", "type": "address" }], "name": "addManager", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_approved", "type": "address" }, { "internalType": "uint256", "name": "_tokenId", "type": "uint256" }], "name": "approve", "outputs": [], "stateMutability": "payable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_owner", "type": "address" }], "name": "balanceOf", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "_tokenId", "type": "uint256" }], "name": "getApproved", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_owner", "type": "address" }, { "internalType": "address", "name": "_operator", "type": "address" }], "name": "isApprovedForAll", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "manager", "type": "address" }], "name": "isGameManager", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "manager", "type": "address" }], "name": "isManager", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_to", "type": "address" }, { "internalType": "uint256", "name": "_tokenId", "type": "uint256" }], "name": "mint", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "name", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "pure", "type": "function" }, { "inputs": [], "name": "owner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "_tokenId", "type": "uint256" }], "name": "ownerOf", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "pause", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "paused", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "manager", "type": "address" }], "name": "removeGameManager", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "manager", "type": "address" }], "name": "removeManager", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "renounceOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_from", "type": "address" }, { "internalType": "address", "name": "_to", "type": "address" }, { "internalType": "uint256", "name": "_tokenId", "type": "uint256" }, { "internalType": "bytes", "name": "_data", "type": "bytes" }], "name": "safeTransferFrom", "outputs": [], "stateMutability": "payable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_operator", "type": "address" }, { "internalType": "bool", "name": "_approved", "type": "bool" }], "name": "setApprovalForAll", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "string", "name": "_prefix", "type": "string" }, { "internalType": "string", "name": "_suffix", "type": "string" }], "name": "setTokenURIAffixes", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "bytes4", "name": "interfaceID", "type": "bytes4" }], "name": "supportsInterface", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "symbol", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "pure", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "_index", "type": "uint256" }], "name": "tokenByIndex", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_owner", "type": "address" }, { "internalType": "uint256", "name": "_index", "type": "uint256" }], "name": "tokenOfOwnerByIndex", "outputs": [{ "internalType": "uint256", "name": "_tokenId", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "_tokenId", "type": "uint256" }], "name": "tokenURI", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "tokenURIPrefix", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "tokenURISuffix", "outputs": [{ "internalType": "string", "name": "", "type": "string" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "totalSupply", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_from", "type": "address" }, { "internalType": "address", "name": "_to", "type": "address" }, { "internalType": "uint256", "name": "_tokenId", "type": "uint256" }], "name": "transferFrom", "outputs": [], "stateMutability": "payable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }], "name": "transferOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "unpause", "outputs": [], "stateMutability": "nonpayable", "type": "function" }];
+	var marketAbi = [{ "inputs": [{ "internalType": "uint256", "name": "_marketCut", "type": "uint256" }, { "internalType": "address", "name": "_tokenAddress", "type": "address" }], "stateMutability": "nonpayable", "type": "constructor" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "previousOwner", "type": "address" }, { "indexed": true, "internalType": "address", "name": "newOwner", "type": "address" }], "name": "OwnershipTransferred", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "_nftAddress", "type": "address" }, { "indexed": true, "internalType": "uint256", "name": "_tokenId", "type": "uint256" }], "name": "SellCancelled", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "_nftAddress", "type": "address" }, { "indexed": true, "internalType": "uint256", "name": "_tokenId", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "_price", "type": "uint256" }, { "indexed": false, "internalType": "address", "name": "_seller", "type": "address" }], "name": "SellCreated", "type": "event" }, { "anonymous": false, "inputs": [{ "indexed": true, "internalType": "address", "name": "_nftAddress", "type": "address" }, { "indexed": true, "internalType": "uint256", "name": "_tokenId", "type": "uint256" }, { "indexed": false, "internalType": "uint256", "name": "_totalPrice", "type": "uint256" }, { "indexed": false, "internalType": "address", "name": "_buyer", "type": "address" }], "name": "SellSuccessful", "type": "event" }, { "stateMutability": "nonpayable", "type": "fallback" }, { "inputs": [{ "internalType": "address", "name": "_nftAddress", "type": "address" }, { "internalType": "uint256", "name": "_tokenId", "type": "uint256" }, { "internalType": "uint256", "name": "_buyAmount", "type": "uint256" }], "name": "buy", "outputs": [], "stateMutability": "payable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_nftAddress", "type": "address" }, { "internalType": "uint256", "name": "_tokenId", "type": "uint256" }], "name": "cancelAuctionWhenPaused", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_nftAddress", "type": "address" }, { "internalType": "uint256", "name": "_tokenId", "type": "uint256" }], "name": "cancelSell", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_nftAddress", "type": "address" }, { "internalType": "uint256", "name": "_tokenId", "type": "uint256" }, { "internalType": "uint256", "name": "_price", "type": "uint256" }], "name": "createSell", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "getMarketCut", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_nftAddress", "type": "address" }, { "internalType": "uint256", "name": "_tokenId", "type": "uint256" }], "name": "getPrice", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "_nftAddress", "type": "address" }, { "internalType": "uint256", "name": "_tokenId", "type": "uint256" }], "name": "getSell", "outputs": [{ "internalType": "address", "name": "seller", "type": "address" }, { "internalType": "uint256", "name": "price", "type": "uint256" }, { "internalType": "uint256", "name": "startedAt", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "getTokenAddress", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "marketCut", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "owner", "outputs": [{ "internalType": "address", "name": "", "type": "address" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "pause", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "paused", "outputs": [{ "internalType": "bool", "name": "", "type": "bool" }], "stateMutability": "view", "type": "function" }, { "inputs": [], "name": "reclaimToken", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "", "type": "address" }, { "internalType": "uint256", "name": "", "type": "uint256" }], "name": "sells", "outputs": [{ "internalType": "address", "name": "seller", "type": "address" }, { "internalType": "uint128", "name": "price", "type": "uint128" }, { "internalType": "uint256", "name": "startedAt", "type": "uint256" }], "stateMutability": "view", "type": "function" }, { "inputs": [{ "internalType": "uint256", "name": "_marketCut", "type": "uint256" }], "name": "setMarketCut", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [{ "internalType": "address", "name": "newOwner", "type": "address" }], "name": "transferOwnership", "outputs": [], "stateMutability": "nonpayable", "type": "function" }, { "inputs": [], "name": "unpause", "outputs": [], "stateMutability": "nonpayable", "type": "function" }];
+
+	// 合约地址
+	var tokenContractAddress = "0x679747a4118966e1941121c19425f74dd0639ea7";
+	var nftContractAddress = "0x79269ccc01346422dfbe147d6b6bf4323a53c8e3";
+	var marketContractAddress = "0xfcf1126b873005b24d6c2cebe395751c02c67a97";
+
+	// 测试账户（仅限测试网测试使用，请不要用到主网上）
+	var ownerAddress = "0xe346181ae6aeeb88ad5a51368f8d640de4b10d48";
+	var ownerPriky = "0x55531f8b33341e8505675d0d8ac427fb9612d91a5740c823bf5971b8ab5c8eac";
+	var sellerAddress = "0x82da9bf0465581c5d54c19f07fc35145a4c5b95f";
+	var sellerPriky = "0xba64f3125757dfe5bbb6e7bc65f471b4826d00d6b1962ee5bf2376cbb2679011";
+	var buyerAddress = "0x1b48e3a7f32ed7c88498cdf75e95e7a4b375b782";
+	var buyerPriky = "0xf174ce722718ce77faa7ea0581adf2f5671b7333e19fcdca0fae13ff0e59430b";
+
+	// 创建合约对象
+	var tokenContract = new web3.eth.Contract(tokenAbi, tokenContractAddress);
+	var nftContract = new web3.eth.Contract(nftAbi, nftContractAddress);
+	var marketContract = new web3.eth.Contract(marketAbi, marketContractAddress);
+
+
+	/*基础函数*/
+
+	function writeHtml(content) {
+		var insertDiv = document.getElementById("result")
+		var html = insertDiv.innerHTML
+		insertDiv.innerHTML = html + "<p>" + content + "</p>";
+		console.log(insertDiv.innerHTML)
+	}
+
+	/**
+	 * 发送交易
+	 * fromAddress 交易发起者的地址
+	 * contractAddress 合约地址
+	 * nonceNum nonce
+	 * privKey 私钥
+	 * data 调用的合约函数的数据
+	 * **/
+	function sendRawTransaction(fromAddress, contractAddress, nonceNum, privKey, data) {
+		return new Promise((resolve, reject) => {
+			var rawTransaction = {
+				"from": fromAddress,
+				"nonce": nonceNum,
+				"gasLimit": 200000, // 1. gasPrice 设置要足够，否则会出现 transaction underpriced 的错误
+				"gasPrice": 20000000000, // 2. 注意自身账户余额要足够支付交易费用，不够报错：insufficient funds for gas * price + value
+				"to": contractAddress,
+				"data": data,
+				"value": 0,
+				"chainId": 97
+			};
+
+			web3.eth.accounts.signTransaction(rawTransaction, privKey).then((signedTx) => {
+				const sentTx = web3.eth.sendSignedTransaction(signedTx.raw || signedTx.rawTransaction);
+				sentTx.on('transactionHash', (hash) => {
+					resolve(hash);
+				});
+				sentTx.on('error', (error) => {
+					// 交易出现异常
+					writeHtml(error);
+				});
+			}).catch((err) => {
+				writeHtml(err)
+			});
+		});
+	}
+
+	async function sendTransactionAndWaitSuccess(fromAddress, contractAddress, nonceNum, privKey, data) {
+		var hash = await sendRawTransaction(fromAddress, contractAddress, nonceNum, privKey, data);
+		var info = await web3.eth.getTransaction(hash);
+		while (!info.blockHash) {
+			await new Promise(resolve => setTimeout(resolve, 1000));
+			info = await web3.eth.getTransaction(hash);
+		}
+		return hash;
+	}
+
+	async function balanceOf(contractObj, address) {
+		return new Promise((resolve, reject) => {
+			contractObj.methods.balanceOf(address).call({}, function (error, result) {
+				resolve(result)
+			});
+		});
+	}
+
+	async function ownerOf(contractObj, tokenId) {
+		return new Promise((resolve, reject) => {
+			contractObj.methods.ownerOf(tokenId).call({}, function (error, result) {
+				resolve(result)
+			});
+		});
+	}
+
+	async function isApprovedForAll(contractObj, address, operator) {
+		return new Promise((resolve, reject) => {
+			contractObj.methods.isApprovedForAll(address, operator).call({}, function (error, result) {
+				resolve(result)
+			});
+		});
+	}
+
+	async function getSell(contractObj, nftAddress, tokenId) {
+		return new Promise((resolve, reject) => {
+			contractObj.methods.getSell(nftAddress, tokenId).call({}, function (error, result) {
+				resolve(result)
+			});
+		});
+	}
+
+	async function getPrice(contractObj, nftAddress, tokenId) {
+		return new Promise((resolve, reject) => {
+			contractObj.methods.getPrice(nftAddress, tokenId).call({}, function (error, result) {
+				resolve(result)
+			});
+		});
+	}
+
+	async function allowance(contractObj, owner, spender) {
+		return new Promise((resolve, reject) => {
+			contractObj.methods.allowance(owner, spender).call({}, function (error, result) {
+				resolve(result)
+			});
+		});
+	}
+
+	async function getMarketCut(contractObj) {
+		return new Promise((resolve, reject) => {
+			contractObj.methods.getMarketCut().call({}, function (error, result) {
+				resolve(result)
+			});
+		});
+	}
+
+
+	/**测试 Demo**/
+	const Demo = async () => {
+		writeHtml(`web3 version: ${web3.version}`)
+		var ownerNonce = await web3.eth.getTransactionCount(ownerAddress);
+		var sellerNonce = await web3.eth.getTransactionCount(sellerAddress);
+		var buyerNonce = await web3.eth.getTransactionCount(buyerAddress);
+
+		// 查询各个账户的余额
+		var balanceOfOwner = await balanceOf(tokenContract, ownerAddress);
+		var balanceOfSeller = await balanceOf(tokenContract, sellerAddress);
+		var balanceOfBuyer = await balanceOf(tokenContract, buyerAddress);
+		var balanceOfMarket = await balanceOf(tokenContract, marketContractAddress);
+		writeHtml("balance of owner: " + balanceOfOwner);
+		writeHtml("balance of seller: " + balanceOfSeller);
+		writeHtml("balance of buyer: " + balanceOfBuyer);
+		writeHtml("balance of market: " + balanceOfMarket);
+
+		var tokenId = 654342;
+		var sellAmount = 2000000;
+
+		// owner 调用 nftContract 发一个 token 给 seller
+		writeHtml("-------------")
+		writeHtml("step1: 发行一个 token: " + tokenId);
+		var mintData = nftContract.methods.mint(sellerAddress, tokenId).encodeABI();
+		var hash = await sendTransactionAndWaitSuccess(ownerAddress, nftContractAddress, ownerNonce, ownerPriky, mintData);
+
+		writeHtml("mint token: " + tokenId + ", transaction hash: " + hash);
+		var owner = await ownerOf(nftContract, tokenId);
+		writeHtml("token " + tokenId + " owner: " + owner);
+
+		// seller 调用 setApprovedAll 方法，将 token 代理给 market
+		writeHtml("-------------")
+		writeHtml("step2: seller 把 token 代理给 market");
+		writeHtml("seller: " + sellerAddress);
+		var approveData = nftContract.methods.setApprovalForAll(marketContractAddress, true).encodeABI();
+		// 如果之前已经调用过，则交易将抛出异常
+		var hash = await sendTransactionAndWaitSuccess(sellerAddress, nftContractAddress, sellerNonce, sellerPriky, approveData);
+		var approved = await isApprovedForAll(nftContract, sellerAddress, marketContractAddress);
+
+		writeHtml("approve all: " + sellerAddress + " 》》" + marketContractAddress);
+		writeHtml("transaction hash: " + hash);
+		writeHtml((approved ? "approve success" : "approve failed"));
+
+		// seller 调用 createSell 方法将 nft 挂单销售
+		writeHtml("-------------")
+		writeHtml("step3: seller 挂单销售");
+		var createData = marketContract.methods.createSell(nftContractAddress, tokenId, sellAmount).encodeABI();
+		var hash = await sendTransactionAndWaitSuccess(sellerAddress, marketContractAddress, sellerNonce + 1, sellerPriky, createData);
+
+		writeHtml("create sell: " + tokenId + ", transaction hash: " + hash);
+		var sell = await getSell(marketContract, nftContractAddress, tokenId);
+		writeHtml("get sell info: " + JSON.stringify(sell));
+		var owner = await ownerOf(nftContract, tokenId);
+		writeHtml("token " + tokenId + " owner: " + owner);
+
+		// buyer 将 price 数量的代币代理给市场
+		writeHtml("-------------")
+		writeHtml("step4: 将 price 数量的 token 代理给市场");
+		writeHtml("buyer: " + buyerAddress);
+		var price = await getPrice(marketContract, nftContractAddress, tokenId);
+		var tokenApproveData = tokenContract.methods.approve(marketContractAddress, price).encodeABI();
+		var hash = await sendTransactionAndWaitSuccess(buyerAddress, tokenContractAddress, buyerNonce, buyerPriky, tokenApproveData);
+		writeHtml("approve amount " + price + " to " + marketContractAddress + ": transaction hash: " + hash);
+		var allow = await allowance(tokenContract, buyerAddress, marketContractAddress);
+		writeHtml("allow amount: " + allow);
+
+		// buyer 购买
+		writeHtml("-------------")
+		writeHtml("step5: buyer 购买");
+		var buyData = marketContract.methods.buy(nftContractAddress, tokenId, price).encodeABI();
+		var hash = await sendTransactionAndWaitSuccess(buyerAddress, marketContractAddress, buyerNonce + 1, buyerPriky, buyData);
+		writeHtml("buy token " + tokenId + ", transaction hash: " + hash);
+		writeHtml("购买成功");
+		var owner = await ownerOf(nftContract, tokenId);
+
+		var marketCut = await getMarketCut(marketContract);
+		var cut = price * marketCut / 10000;
+
+		writeHtml("token " + tokenId + " owner: " + owner + "[所有权转移]");
+		balanceOfOwner = await balanceOf(tokenContract, ownerAddress);
+		balanceOfSeller = await balanceOf(tokenContract, sellerAddress);
+		balanceOfBuyer = await balanceOf(tokenContract, buyerAddress);
+		balanceOfMarket = await balanceOf(tokenContract, marketContractAddress);
+		writeHtml("balance of owner: " + balanceOfOwner + "[不变]");
+		writeHtml("balance of seller: " + balanceOfSeller + "[+" + (price - marketCut) + "]");
+		writeHtml("balance of buyer: " + balanceOfBuyer + "[-" + price + "]");
+		writeHtml("balance of market: " + balanceOfMarket + "[+" + cut + "]");
+
+		// 提取到 owner
+		writeHtml("-------------")
+		writeHtml("step6: 提取到 owner");
+		var reclaimData = marketContract.methods.reclaimToken().encodeABI();
+		var hash = await sendTransactionAndWaitSuccess(ownerAddress, marketContractAddress, ownerNonce + 1, ownerPriky, reclaimData);
+		writeHtml("reclaim token, transaction hash: " + hash);
+		balanceOfOwner = await balanceOf(tokenContract, ownerAddress);
+		writeHtml("balance of owner: " + balanceOfOwner + "[+" + balanceOfMarket + "]");
+		balanceOfMarket = await balanceOf(tokenContract, marketContractAddress);
+		writeHtml("balance of market: " + balanceOfMarket + "[变成 0]");
+	}
+
+	Demo();
+
+
+</script>
+
+</html>

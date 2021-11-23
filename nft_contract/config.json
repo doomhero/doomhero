@@ -1,0 +1,10 @@
+{
+  "main": "./contracts/DoomERC721.sol",
+  "deploy": "./build/contracts/DoomERC721.json",
+  "compilers": {
+    "truffle": "v5.4.1",
+    "solc": "0.6.12",
+    "evmVersion": "istanbul"
+  },
+  "linter": "solhint"
+}
