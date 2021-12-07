@@ -1,46 +1,70 @@
-# 合约说明
-1. 合约 Owner
-可以转移 放弃 Owner 权限
-对应接口：
+# Contract specification
+1. Contract Owner
+Can be transfer or renounce Owner 
+Some Inferface：
 ```
-	transferOwnership(address newOwner) 转移合约所有者
-	renounceOwnership() 放弃 Owner 权限，执行后合约没有所有者
-	owner() 返回合约的所有者
+	** Transfer contract owner.**
+	transferOwnership(address newOwner) 
+	** renounce Contract Owner, Contract will not have owner after execute this functions.**
+	renounceOwnership() 
+	** retuen contract owner.**
+	owner() 
 ```
-2. 权限 Owner，Manager，GameManager
-	2.1 Owner 具有最高权限，可以添加/删除 Manager 和 GameManager
-	2.2 Manager 可以添加/删除 GameManager
-	对应接口：
+2. Authority: Owner，Manager，GameManager
+	2.1 Owner has the highest privileges who can add/delete *Manager* and *GameManager*
+	2.2 Manager can add/delete *GameManager*
+	Some Interface：
 	```
-	addManager(address manager) 添加管理员
-	removeManager(address manager) 移除管理员
-	isManager(address manager) 判断是否是管理员
-	addGameManager(address manager) 添加游戏管理员
-	removeGameManager(address manager) 删除游戏管理员
-	isGameManager(address manager) 判断是否是游戏管理员
+	** add Manager**
+	addManager(address manager)
+	** remove Manager**
+	removeManager(address manager)
+	** check whether you are a Manager**
+	isManager(address manager)
+	** add GameManager**
+	addGameManager(address manager)
+	** remove GameManager**
+	removeGameManager(address manager)
+	** check whether you are a GameManager**
+	isGameManager(address manager)
 	```
-3. 交易暂停功能
+3. Trading pause function
 ```
-	pause() 需要 Manager 权限执行
-	unpause() 需要 Owner 权限执行
+	** need Manager authority to execute**
+	pause()
+	** need Owner authority to execute**
+	unpause()
 ```
-4. MetaData 元信息接口（NFT信息保存在外部服务器上，将 NFT 信息的链接保存在链上）
+4. MetaData (Meta information interface, NFT information is stored on an external server and links to NFT information are stored on a chain.)
 ```
 	name(), symbol()
-	setTokenURIAffixes(string prefix, string suffix) 设置 NFT 信息链接的前缀和后缀
-	tokenURI(uint256 tokenId) 返回 NFT 的 uri
+	** set nft uri prefix && **
+	setTokenURIAffixes(string prefix, string suffix)
+	** return uri of nft**
+	tokenURI(uint256 tokenId)
 ```
-5. ERC721 接口
+5. ERC721 Interface
 ```
-	balanceOf(address _owner) 返回 owner 拥有的 nft 数量
-	ownerOf(uint256 _tokenId) 返回 tokenId 对应的 NFT 所有者
-	transferFrom(address _from, address _to, uint256 _tokenId) NFT 代理或者所有者把 tokenId 的 NFT 从 from 转移到 to
-	approve(address _approved, uint256 _tokenId) NFT 所有者将 NFT 代理给 approved
-	setApprovalForAll(address _operator, bool _approved) 所有者将自己的 NFT 管理权限代理给 operator
-	getApproved(uint256 _tokenId) 获取某个 token 的代理（token 的代理只能有一个）
-	isApprovedForAll(address _owner, address _operator) 判断 owner 的 NFT 权限是否代理给 operator
-	totalSupply() 返回总的 NFT 数量
-	tokenByIndex(uint256 _index) 根据 token 的索引获得 tokenId
-	tokenOfOwnerByIndex(address _owner, uint256 _index) 根据 token 在 owner 所有 token 中的索引获得 tokenId
-	mint(address _to, uint256 _tokenId) 发布一个 token 个地址为 to 的用户（需要 GameManager 及以上的权限）
+	** return number of owner's nft**
+	balanceOf(address _owner)
+	** return owner of token with @parm _tokenId**
+	ownerOf(uint256 _tokenId)
+	** transfer token from '*from*' to '*to*', need nft owner or approved address.**
+	transferFrom(address _from, address _to, uint256 _tokenId)
+	** approved nft to address @parm _approved**
+	approve(address _approved, uint256 _tokenId)
+	** The owner delegates his NFT administrative rights to the operator**
+	setApprovalForAll(address _operator, bool _approved)
+	** get nft approved**
+	getApproved(uint256 _tokenId)
+	** return true if nft was approved to operator**
+	isApprovedForAll(address _owner, address _operator)
+	** return totalSupply**
+	totalSupply()
+	** return tokenId by _index**
+	tokenByIndex(uint256 _index)
+	** return tokenId on owner's token list by _index**
+	tokenOfOwnerByIndex(address _owner, uint256 _index)
+	** mint nft(need authority above *GameManager*)**
+	mint(address _to, uint256 _tokenId)
 ```
