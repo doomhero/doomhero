@@ -21,8 +21,6 @@ contract Marketplace is Pausable{
     // Values 0-10,000 map to 0%-100%
     uint256 public marketCut;
 
-    address private tokenAddress;
-
     // Map from token ID to their corresponding sell.
     mapping (address => mapping (uint256 => Sell)) public sells;
 
@@ -45,14 +43,12 @@ contract Marketplace is Pausable{
         uint256 indexed _tokenId
     );
 
-    constructor(uint256 _marketCut, address _tokenAddress) public {
+    constructor(uint256 _marketCut) public {
         require(_marketCut <= 10000, "ERROR: market cut must less than 10000");
-        require(_tokenAddress != address(0), "ERROR: token address error");
         marketCut = _marketCut;
-        tokenAddress = _tokenAddress;
     }
 
-    /// @dev DON'T give me your money.
+    // @dev DON'T give me your money.
     fallback() external {}
 
     // Modifiers to check that inputs can be safely stored with a certain
@@ -67,10 +63,12 @@ contract Marketplace is Pausable{
         _;
     }
 
-    function reclaimToken() external onlyOwner {
-        IBEP20 _token = _getTokenContract(tokenAddress);
-        uint256 balance = _token.balanceOf(address(this));
-        _token.safeTransfer(owner(), balance);
+    /**
+   * @dev Transfer all BNB held by the contract to the owner.
+   */
+    function reclaim() external onlyOwner {
+        address payable owner = payable(owner());   
+        owner.transfer(address(this).balance);
     }
 
     function setMarketCut(uint256 _marketCut) external onlyOwner {
@@ -80,10 +78,6 @@ contract Marketplace is Pausable{
 
     function getMarketCut() external view returns (uint256) {
         return marketCut;
-    }
-
-    function getTokenAddress() external view returns (address) {
-        return tokenAddress;
     }
 
     function getSell(
@@ -147,14 +141,13 @@ contract Marketplace is Pausable{
 
     function buy(
         address _nftAddress,
-        uint256 _tokenId,
-        uint256 _buyAmount
+        uint256 _tokenId
     )
         external
         payable
         whenNotPaused
     {
-        _buy(_nftAddress, _tokenId, _buyAmount);
+        _buy(_nftAddress, _tokenId, msg.value);
         _transfer(_nftAddress, msg.sender, _tokenId);
     }
 
@@ -186,11 +179,6 @@ contract Marketplace is Pausable{
         IERC721Base candidateContract = IERC721Base(_nftAddress);
         // require(candidateContract.implementsERC721());
         return candidateContract;
-    }
-
-    function _getTokenContract(address _tokenAddress) internal pure returns (IBEP20) {
-        IBEP20 token = IBEP20(_tokenAddress);
-        return token;
     }
 
     function _owns(address _nftAddress, address _claimant, uint256 _tokenId) internal view returns (bool) {
@@ -255,13 +243,7 @@ contract Marketplace is Pausable{
         uint256 _price = _sell.price;
         require(_bidAmount >= _price, "ERROR: bid amount less than price");
 
-        IBEP20 _token = _getTokenContract(tokenAddress);
-        address buyer = msg.sender;
-        uint256 balance = _token.balanceOf(buyer);
-        require(balance >= _bidAmount, "ERROR: balance lees then bid amount");
-
-        address owner = owner();   
-        address _seller = _sell.seller;
+        address payable _seller = payable(_sell.seller);
 
         _removeSell(_nftAddress, _tokenId);
 
@@ -269,18 +251,20 @@ contract Marketplace is Pausable{
             uint256 _marketCut = _computeCut(_price);
             uint256 _sellerProceeds = _price - _marketCut;
 
-            //_seller.transfer(_sellerProceeds);
-            _token.safeTransferFrom(buyer, address(this), _price);
-            _token.safeTransfer(_seller, _sellerProceeds);
+            _seller.transfer(_sellerProceeds);
         }
 
+        if(_bidAmount > _price){
+            uint256 _bidExcess = _bidAmount - _price;
+            msg.sender.transfer(_bidExcess);
+        }
 
         // Tell the world!
         SellSuccessful(
             _nftAddress,
             _tokenId,
             _price,
-            buyer
+            msg.sender
         );
 
         return _price;
