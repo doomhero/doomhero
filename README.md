@@ -1,16 +1,16 @@
 # DH
 
-## 代币合约
+## Token Contract
 
-DHD和DHG代币合约相关函数解释及合约地址
+DHD && DHG
 
-## NFT合约
+## NFT Contract
 
-NFT的创建
+NFT Create
 
 ## SDK
 
-合约调用SDK
+.
 
 
 
