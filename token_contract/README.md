@@ -2,18 +2,16 @@
 
 ## DHD
 
-合约地址（DHD）：```0xac55b04af8e9067d6c53785b34113e99e10c2a11```
+[正式网合约地址](https://bscscan.com/address/0xac55b04af8e9067d6c53785b34113e99e10c2a11)：```0xac55b04af8e9067d6c53785b34113e99e10c2a11```
 
+[测试网合约地址](https://testnet.bscscan.com/address/0x679747a4118966e1941121c19425f74dd0639ea7)：```0x679747a4118966e1941121c19425f74DD0639eA7```
 
-
-[查看合约](https://bscscan.com/address/0xac55b04af8e9067d6c53785b34113e99e10c2a11)
 
 ## [DHG]
 
-合约地址（DHG）：```0xbba24300490443bb0e344bf6ec11bac3aa91df72```
+[合约地址](https://bscscan.com/address/0xbba24300490443bb0e344bf6ec11bac3aa91df72)：```0xbba24300490443bb0e344bf6ec11bac3aa91df72```
+[测试网地址](https://testnet.bscscan.com/address/0x97694e813c2e862e024a98523dcac479739dafe9)：```0x97694e813c2e862e024a98523dcac479739dafe9```
 
-
-[查看合约](https://bscscan.com/address/0xbba24300490443bb0e344bf6ec11bac3aa91df72)
 
 
 
