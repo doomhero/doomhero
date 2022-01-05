@@ -1,7 +1,7 @@
 # Contract Info
 [正式网地址](https://bscscan.com/address/0xc103147c34d306CBDaA9785B46258A97885320f6)：	```0xc103147c34d306CBDaA9785B46258A97885320f6```
 
-[测试网地址](https://testnet.bscscan.com/address/0x79269ccc01346422dfbe147d6b6bf4323a53c8e3):	```0x79269ccc01346422dfbe147d6b6bf4323a53c8e3```
+[测试网地址](https://testnet.bscscan.com/address/0x79269ccc01346422dfbe147d6b6bf4323a53c8e3):		```0x79269ccc01346422dfbe147d6b6bf4323a53c8e3```
 
 
 # Contract specification
