@@ -10,11 +10,11 @@
 
 ## [DHG]
 
-合约地址（DHG）：```0x1b647a0297ed095ef1849985e273512fa3209f31```
+合约地址（DHG）：```0xbba24300490443bb0e344bf6ec11bac3aa91df72```
 
 
+[查看合约](https://bscscan.com/address/0xbba24300490443bb0e344bf6ec11bac3aa91df72)
 
-[查看合约](https://bscscan.com/address/0x1b647a0297ed095ef1849985e273512fa3209f31)
 
 
 
